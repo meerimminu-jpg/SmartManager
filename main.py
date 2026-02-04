@@ -1,18 +1,25 @@
-# 1. Биринчи функция (Календарь)
-def show_calendar():
-    print("\n--- SmartManager Календары ---")
-    print("Бүгүнкү дата: 2024-жыл, 22-май")
-    print("Жакынкы иш-чаралар: Лабораториялык ишти тапшыруу.")
+import logging
 
-# 2. Экинчи функция (Жашты суроо - жаңы кошулганы)
+# Логду жөндөө
+logging.basicConfig(
+    filename='app.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    encoding='utf-8'
+)
+
 def get_user_age():
+    logging.info("Жаш суроо функциясы башталды.")
     try:
-        age = int(input("Жашыңызды киргизиңиз: "))
-        print(f"Сиздин жашыңыз: {age}")
+        age_input = input("Жашыңызды киргизиңиз: ")
+        age = int(age_input)
+        logging.info(f"Колдонуучу киргизген жаш: {age}")
+        print(f"Рахмат! Сиздин жашыңыз: {age}")
     except ValueError:
-        print("Ката! Сураныч, тамга эмес, бир гана сан киргизиңиз.")
+        logging.error("Ката! Колдонуучу сан эмес маалымат киргизди.")
+        print("Сураныч, бир гана сан киргизиңиз!")
 
-# 3. Эң аягында - СТАРТ БЛОГУ (ушул жерден чакырасыз)
 if __name__ == "__main__":
-    show_calendar() # биринчи календарь чыгат
-    get_user_age()  # андан кийин жашты сурайт
+    logging.info("Программа ишке кирди.")
+    get_user_age()
+    logging.info("Программа ийгиликтүү аяктады.")
