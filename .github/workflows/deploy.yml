@@ -1,25 +1,11 @@
-name: Build and Release
+- name: Flake8 линтерин орнотуу
+        run: pip install flake8
 
-on:
-  push:
-    tags:
-      - 'v*' # Качан гана v1.0 сыяктуу тег коюлганда иштейт
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create Artifact (Zip)
+      - name: Коддун сапатын текшерүү (Static Analysis)
         run: |
-          # Программаны жана логдорду архивге чогултуу
-          zip -r project-v1.zip main.py geometry.py calc.py
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: project-v1.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Биринчи: оор каталарды текшерүү (Syntax errors)
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          
+          # Экинчи: стилдик каталарды текшерүү (PEP 8)
+          # --exit-zero болсо, стилдик ката үчүн пайплайн токтобойт, бирок эскертүү берет
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
