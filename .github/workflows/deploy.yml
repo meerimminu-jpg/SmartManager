@@ -1,5 +1,5 @@
-      - name: Pytest орнотуу
-        run: pip install pytest
-      - name: Юнит-тесттерди иштетүү
-        run: pytest test_logic.py
+- name: Pytest орнотуу
+run: pip install pytest
+- name: Юнит-тесттерди иштетүү
+run: pytest test_logic.py
 
