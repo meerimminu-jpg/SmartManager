@@ -1,7 +1,5 @@
-def show_calendar():
-    print("\n--- SmartManager Календары ---")
-    print("Бүгүнкү дата: 2024-жыл, 22-май")
-    print("Жакынкы иш-чаралар: Лабораториялык ишти тапшыруу.")
+import datetime
 
-if __name__ == "__main__":
-    show_calendar()
+def show_time():
+    now = datetime.datetime.now()
+    print(f"Учурдагы убакыт: {now.strftime('%H:%M:%S')}")
