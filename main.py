@@ -2,7 +2,7 @@
 import datetime
 
 def show_time():
-    print("Негизги версия")
+    print("Негизги бутактын жаңы жазуусу")
     print(f"Учурдагы убакыт: {now.strftime('%H:%M:%S')}")
 =======
 def show_author():
