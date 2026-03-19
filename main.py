@@ -1,24 +1,39 @@
-def add(a, b):
-    return a + b
+from validator import check_email, check_password_strong, is_username_unique
 
-# test_calculator.py
-import pytest
-# Төмөнкү сапты өчүрдүк, себеби add() ушул эле файлда
-# from calculator import add 
+def registration():
+    print("=== Регистрация в системе ===")
+    
+    # 1. Проверка логина
+    while True:
+        login = input("Введите новый логин: ")
+        ok, msg = is_username_unique(login)
+        if ok:
+            break
+        print(msg)
 
-def test_add_success():
-    assert add(2, 3) == 5
+    # 2. Проверка почты
+    while True:
+        email = input("Ваша электронная почта: ")
+        ok, msg = check_email(email)
+        if ok:
+            break
+        print(msg)
 
-def test_add_wrong():
-    assert add(2, 2) != 5
+    # 3. Проверка и подтверждение пароля
+    while True:
+        pwd1 = input("Придумайте пароль: ")
+        ok, msg = check_password_strong(pwd1)
+        if not ok:
+            print(msg)
+            continue
+            
+        pwd2 = input("Повторите пароль: ")
+        if pwd1 == pwd2:
+            print("Регистрация прошла успешно!")
+            break
+        else:
+            print("Ошибка! Пароли не совпадают.")
 
-def get_user_age():
-    try:
-        age = int(input("Жашыңызды киргизиңиз: "))
-        print(f"Сиздин жашыңыз: {age}")
-    except ValueError:
-        print("Ката! Сураныч, тамга эмес, бир гана сан киргизиңиз.")
-
-# Функцияны иштетүү үчүн аны чакыруу керек:
 if __name__ == "__main__":
-    get_user_age()
+    registration()
+
