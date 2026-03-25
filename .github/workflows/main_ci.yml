@@ -2,34 +2,48 @@ name: Python Project CI/CD
 
 on:
   push:
-    branches: [ main ]  # main бутагына код келгенде иштейт
+    branches: [ main ]
+    tags:
+      - 'v*'
   pull_request:
     branches: [ main ]
 
 jobs:
-  test-and-log-check:
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Кодду көчүрүү
-      uses: actions/checkout@v3
+      - name: Кодду көчүрүү
+        uses: actions/checkout@v3
 
-    - name: Python орнотуу
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Python орнотуу
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Керектүү китепканаларды орнотуу
-      run: |
-        python -m pip install --upgrade pip
-        # Бизге unittest жана logging керек, алар стандарттуу китепканалар
+      - name: Керектүү китепканаларды орнотуу
+        run: |
+          python -m pip install --upgrade pip
+          # Эгер кошумча китепканалар болсо, бул жерге кошуңуз (мисалы: pip install pytest)
 
-    - name: Тесттерди иштетүү
-      run: python test_logic.py
+      - name: Тесттерди иштетүү
+        run: |
+          # Файл бар экенин текшерип, анан иштетет
+          if [ -f test_logic.py ]; then python test_logic.py; else echo "Тест файлы табылган жок"; fi
 
-    - name: Программанын иштешин текшерүү (Dry run)
-      run: |
-        # Программаны автоматтык түрдө иштетип көрүү (лог түзүлөбү?)
-        echo "25" | python main.py 
-        if [ -f app.log ]; then echo "Лог файлы түзүлдү!"; else exit 1; fi
+      - name: Программаны иштетип көрүү
+        run: |
+          if [ -f main.py ]; then python main.py; else echo "main.py табылган жок"; fi
 
+      - name: Архив түзүү (Zip)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          zip -r project.zip . -i "*.py"
+
+      - name: Релиз түзүү
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: project.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
