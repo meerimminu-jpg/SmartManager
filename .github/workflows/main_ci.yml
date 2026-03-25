@@ -1,34 +1,25 @@
-name: Python Project CI/CD
+name: Build and Release
 
 on:
   push:
-    branches: [ main ]  # main бутагына код келгенде иштейт
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*' # Качан гана v1.0 сыяктуу тег коюлганда иштейт
 
 jobs:
-  test-and-log-check:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Кодду көчүрүү
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Python орнотуу
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: Create Artifact (Zip)
+        run: |
+          # Программаны жана логдорду архивге чогултуу
+          zip -r project-v1.zip main.py geometry.py calc.py
 
-    - name: Керектүү китепканаларды орнотуу
-      run: |
-        python -m pip install --upgrade pip
-        # Бизге unittest жана logging керек, алар стандарттуу китепканалар
-
-    - name: Тесттерди иштетүү
-      run: python test_logic.py
-      
-- name: Программанын иштешин текшерүү (Сухой прогон)
-      run: |
-        # Программа сурай турган суроолорго ирети менен жоопторду жиберебиз:
-        # 1. Почта, 2. Логин, 3. Пароль, 4. Паролду кайталоо
-        echo -e "test@mail.com\nuser123\npass123\npass123" | python main.py
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: project-v1.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
