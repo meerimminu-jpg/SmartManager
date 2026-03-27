@@ -1,0 +1,34 @@
+name: Python Project CI/CD
+
+on:
+  push:
+    branches: [ main ]  # Запускается при пуше в ветку main
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-log-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Копирование кода
+      uses: actions/checkout@v3
+
+    - name: Установка Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Установка зависимостей
+      run: |
+        python -m pip install --upgrade pip
+        # unittest и logging — стандартные библиотеки, установка не требуется
+
+    - name: Запуск тестов
+      run: python test_logic.py
+
+    - name: Проверка работы программы (Dry run)
+      run: |
+        # Автоматический запуск программы (проверка создания лога)
+        echo "25" | python main.py 
+        if [ -f app.log ]; then echo "Лог-файл создан!"; else exit 1; fi
