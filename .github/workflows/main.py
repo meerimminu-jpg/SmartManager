@@ -23,3 +23,4 @@ if __name__ == "__main__":
     logging.info("Программа ишке кирди.")
     get_user_age()
     logging.info("Программа ийгиликтүү аяктады.")
+a = 100
