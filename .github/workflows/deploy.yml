@@ -1,34 +1,35 @@
-name: Python application static analysis
+name: Python Project CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]  # main бутагына код келгенде иштейт
   pull_request:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches: [ main ]
 
 jobs:
-  build:
+  test-and-log-check:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+    - name: Кодду көчүрүү
+      uses: actions/checkout@v3
+
+    - name: Python орнотуу
+      uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: '3.9'
 
-    - name: Flake8 линтерин орнотуу
-      run: pip install flake8
-
-    - name: Коддун сапатын текшерүү (Статический анализ)
+    - name: Керектүү китепканаларды орнотуу
       run: |
-        # Биринчи: оор каталарды текшерүү (Синтаксистик каталар)
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        
-        # Экинчи: стилдик каталарды текшерүү (PEP 8)
-        # --exit-zero болсо, стиль ката үчүн пайплайн токтобойт, бирок эскертүү берет
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        python -m pip install --upgrade pip
+        # Бизге unittest жана logging керек, алар стандарттуу китепканалар
+
+    - name: Тесттерди иштетүү
+      run: python test_logic.py
+
+    - name: Программанын иштешин текшерүү (Dry run)
+      run: |
+        # Программаны автоматтык түрдө иштетип көрүү (лог түзүлөбү?)
+        echo "25" | python main.py 
+        if [ -f app.log ]; then echo "Лог файлы түзүлдү!"; else exit 1; fi
+
