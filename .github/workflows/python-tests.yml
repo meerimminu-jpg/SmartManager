@@ -1,0 +1,9 @@
+name: Python Tests
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests
+      run: python -m unittest test_main.py
